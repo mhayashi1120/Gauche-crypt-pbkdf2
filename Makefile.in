@@ -23,10 +23,10 @@ EXEEXT = @EXEEXT@
 LOCAL_PATHS = "@LOCAL_PATHS@"
 
 # Module-specific stuff
-PACKAGE   = Gauche-pbkdf2
+PACKAGE   = Gauche-crypt-pbkdf2
 
 ARCHFILES = 
-SCMFILES  = $(srcdir)/pbkdf2.scm
+SCMFILES  = $(srcdir)/crypt/pbkdf2.scm
 HEADERS   =
 
 TARGET    = $(ARCHFILES)

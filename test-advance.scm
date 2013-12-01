@@ -25,14 +25,13 @@
   (generator-map
    (match-lambda
     [(password salt iterate-text hash-name len-text)
-     (and-let* ([hasher-name (string->symbol (format "<~a>" hash-name))]
-                ;; TODO sha384, sha512 is not working.
-                ;;     There are differences between ruby and gauche hmac implementation..
-                [(not (memq hasher-name '(sha384 sha512)))]
-                [hasher (eval hasher-name (current-module))]
-                [iterations (x->number iterate-text)]
-                [len (and (#/^[0-9]+$/ len-text) (x->number len-text))])
-       (test* (format "~a ~a ~a <~a>" password salt iterations hash-name)
+     (let* ([hasher-name (string->symbol (format "<~a>" hash-name))]
+            ;; TODO Gauche-0.9.3.3 sha384, sha512 is not working.
+            ;;     There are differences between ruby and gauche hmac implementation..
+            [hasher (eval hasher-name (current-module))]
+            [iterations (x->number iterate-text)]
+            [len (and (#/^[0-9]+$/ len-text) (x->number len-text))])
+       (test* (format "~a ~a ~a <~a> (gauche 0.9.3.3 fail this test due to sha384,sha512 bug)" password salt iterations hash-name)
               (process-output->string
                `(ruby "-I" ,*rubylib-dir*
                       "test/advance-test.rb" ,password ,salt ,iterations ,hash-name ,@(if len (list len) '())))

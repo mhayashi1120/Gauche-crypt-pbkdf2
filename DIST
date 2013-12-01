@@ -5,7 +5,7 @@
 #  ./DIST tgz  : creates a tarball.
 # Assumes gnu tar.
 
-MODULE=Gauche-pbkdf2
+MODULE=Gauche-crypt-pbkdf2
 
 while [ $# -gt 0 ]; do
   case $1 in
