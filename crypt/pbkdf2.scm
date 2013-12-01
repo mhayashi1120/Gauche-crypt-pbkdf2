@@ -84,23 +84,22 @@
 
   (F 0 1))
 
-(define (pbkdf2-digest-string password salt iterations
-                              :key (hasher <sha256>)
-                              (key-length (hasher-length hasher)))
+(define (pbkdf2-digest-string password salt iterations . args)
   (with-output-to-string
-    (cut pbkdf2-digest password salt hasher iterations key-length)))
+    (cut apply pbkdf2-digest password salt iterations args)))
 
-(define (pbkdf2-digest password salt hasher iterations keylen)
+(define (pbkdf2-digest password salt iterations
+                       :key (hasher <sha256>) (key-length (hasher-length hasher)))
   (when (< iterations 1)
     (error "argument out of range:" iterations))
 
   (cond
-   [(not keylen)
-    (set! keylen (hasher-length hasher))]
-   [(> keylen #xffffffff)           ; Greather than 4 byte int
+   [(not key-length)
+    (set! key-length (hasher-length hasher))]
+   [(> key-length #xffffffff)           ; Greather than 4 byte int
     (error "key-length too large")])
 
   (pbkdf2-digest-0
    (stringify password) (stringify salt)
-   hasher iterations keylen))
+   hasher iterations key-length))
 
