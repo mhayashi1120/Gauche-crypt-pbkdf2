@@ -8,11 +8,14 @@
    pbkdf2-digest pbkdf2-digest-string))
 (select-module crypt.pbkdf2)
 
+;; Password-Based Key Derivation Functions
+
 ;; http://en.wikipedia.org/wiki/PBKDF2
 
 ;; PBKDF2: http://www.ietf.org/rfc/rfc2898.txt
 ;; PBKDF2 Test: http://www.ietf.org/rfc/rfc6070.txt
 
+;; To pass the u8vector to hmac function
 (define (stringify x)
   (cond [(string? x) x]
         [(u8vector? x) (u8vector->string x)]
@@ -26,27 +29,6 @@
 
 (define (hasher-length hasher)
   (string-length (digest-string hasher "")))
-
-;; PBKDF2
-
-(define (pbkdf2-digest-string password salt iterations :key (hasher <sha256>)
-                              (key-length (hasher-length hasher)))
-  (when (< iterations 1)
-    (error "argument out of range:" iterations))
-
-  (cond
-   [(not key-length)
-    (set! key-length (hasher-length hasher))]
-   [(> key-length #xffffffff)           ; Greather than 4 byte int
-    (error "key-length too large")])
-
-  (with-output-to-string
-    (cut pbkdf2-digest password salt hasher iterations key-length)))
-
-(define (pbkdf2-digest password salt hasher iterations keylen)
-  (pbkdf2-digest-0
-   (stringify password) (stringify salt)
-   hasher iterations keylen))
 
 (define (pbkdf2-digest-0 password salt hasher iterations keylen)
 
@@ -71,3 +53,23 @@
         (F (+ out end) (+ i 1)))))
 
   (F 0 1))
+
+(define (pbkdf2-digest-string password salt iterations :key (hasher <sha256>)
+                              (key-length (hasher-length hasher)))
+  (when (< iterations 1)
+    (error "argument out of range:" iterations))
+
+  (cond
+   [(not key-length)
+    (set! key-length (hasher-length hasher))]
+   [(> key-length #xffffffff)           ; Greather than 4 byte int
+    (error "key-length too large")])
+
+  (with-output-to-string
+    (cut pbkdf2-digest password salt hasher iterations key-length)))
+
+(define (pbkdf2-digest password salt hasher iterations keylen)
+  (pbkdf2-digest-0
+   (stringify password) (stringify salt)
+   hasher iterations keylen))
+
