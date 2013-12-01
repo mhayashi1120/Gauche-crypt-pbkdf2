@@ -1,5 +1,4 @@
 (define-module crypt.pbkdf2
-  (extend util.digest)
   (use binary.pack)
   (use gauche.uvector)
   (use rfc.hmac)
@@ -8,9 +7,9 @@
    pbkdf2-digest pbkdf2-digest-string))
 (select-module crypt.pbkdf2)
 
-;; Password-Based Key Derivation Functions
-
 ;; http://en.wikipedia.org/wiki/PBKDF2
+
+;; RFC 2898 PBKDF2: Password-Based Key Derivation Functions
 
 ;; PBKDF2: http://www.ietf.org/rfc/rfc2898.txt
 ;; PBKDF2 Test: http://www.ietf.org/rfc/rfc6070.txt
@@ -54,21 +53,22 @@
 
   (F 0 1))
 
-(define (pbkdf2-digest-string password salt iterations :key (hasher <sha256>)
+(define (pbkdf2-digest-string password salt iterations
+                              :key (hasher <sha256>)
                               (key-length (hasher-length hasher)))
-  (when (< iterations 1)
-    (error "argument out of range:" iterations))
-
-  (cond
-   [(not key-length)
-    (set! key-length (hasher-length hasher))]
-   [(> key-length #xffffffff)           ; Greather than 4 byte int
-    (error "key-length too large")])
-
   (with-output-to-string
     (cut pbkdf2-digest password salt hasher iterations key-length)))
 
 (define (pbkdf2-digest password salt hasher iterations keylen)
+  (when (< iterations 1)
+    (error "argument out of range:" iterations))
+
+  (cond
+   [(not keylen)
+    (set! keylen (hasher-length hasher))]
+   [(> keylen #xffffffff)           ; Greather than 4 byte int
+    (error "key-length too large")])
+
   (pbkdf2-digest-0
    (stringify password) (stringify salt)
    hasher iterations keylen))

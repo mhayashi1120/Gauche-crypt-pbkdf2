@@ -7,4 +7,5 @@ pass2,salt2,10000,sha224,
 pass3,salt3,10000,sha256,
 pass4,salt4,10000,sha384,
 pass5,salt5,10000,sha512,
-pass3,salt3,10000,sha256,100
+pass6,salt6,100,sha256,100
+pass6,salt6,100,sha256,200
