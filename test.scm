@@ -5,7 +5,9 @@
 (use gauche.test)
 
 (test-start "crypt.pbkdf2")
+
 (use crypt.pbkdf2)
+
 (test-module 'crypt.pbkdf2)
 
 (use text.csv)
@@ -20,7 +22,7 @@
          [ip (open-input-file file)])
     (cut reader ip)))
 
-(let ([reader (csv-reader "hoge.csv")])
+(let ([reader (csv-reader "test/data.csv")])
   (generator-map
    (match-lambda
     [(salt password iterate-text hash-name)
