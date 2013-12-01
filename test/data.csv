@@ -1,4 +1,10 @@
-salt1,pass1,1,sha1
-salt1,pass1,2,sha1
-salt1,pass1,3,sha1
-salt1,pass1,100,sha1
+pass1000,salt1000,1,sha1,
+pass100,salt100,2,sha1,
+pass10,salt10,3,sha1,
+pass1,salt1,100,sha1,
+pass1,salt1,10000,sha1,
+pass2,salt2,10000,sha224,
+pass3,salt3,10000,sha256,
+pass4,salt4,10000,sha384,
+pass5,salt5,10000,sha512,
+pass3,salt3,10000,sha256,100

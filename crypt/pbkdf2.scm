@@ -5,10 +5,13 @@
   (use rfc.hmac)
   (use rfc.sha)
   (export
-   pbkdf2-digest-string))
+   pbkdf2-digest pbkdf2-digest-string))
 (select-module crypt.pbkdf2)
 
 ;; http://en.wikipedia.org/wiki/PBKDF2
+
+;; PBKDF2: http://www.ietf.org/rfc/rfc2898.txt
+;; PBKDF2 Test: http://www.ietf.org/rfc/rfc6070.txt
 
 (define (stringify x)
   (cond [(string? x) x]
@@ -26,8 +29,8 @@
 
 ;; PBKDF2
 
-(define (pbkdf2-digest-string salt password iterations :key [hasher <sha256>]
-                               [key-length (hasher-length hasher)])
+(define (pbkdf2-digest-string password salt iterations :key (hasher <sha256>)
+                              (key-length (hasher-length hasher)))
   (when (< iterations 1)
     (error "argument out of range:" iterations))
 
@@ -38,12 +41,17 @@
     (error "key-length too large")])
 
   (with-output-to-string
-    (cut pbkdf2-digest2 (stringify salt) (stringify password) hasher iterations key-length)))
+    (cut pbkdf2-digest password salt hasher iterations key-length)))
 
-(define (pbkdf2-digest2 salt pass hasher iterations keylen)
+(define (pbkdf2-digest password salt hasher iterations keylen)
+  (pbkdf2-digest-0
+   (stringify password) (stringify salt)
+   hasher iterations keylen))
+
+(define (pbkdf2-digest-0 password salt hasher iterations keylen)
 
   (define (PRF data)
-    (hmac-digest-string data :key pass :hasher hasher))
+    (hmac-digest-string data :key password :hasher hasher))
 
   (define (iterate Ui i)
     (if (>= i iterations)
