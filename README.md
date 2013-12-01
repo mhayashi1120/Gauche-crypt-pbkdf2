@@ -13,6 +13,12 @@ Password-Based Key Derivation Functions for Gauche
 
 ## Function
 
-pbkdf2-digest
-pbkdf2-digest-string
+[Function] pbkdf2-digest
+
+Output digest to current output port
+
+[Function] pbkdf2-digest-string
+
+Get digest by string
+
 
